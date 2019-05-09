@@ -85,6 +85,8 @@
 
         <main class="py-4">
             @yield('content')
+
+            <p class="text-center mt-3">An Application by <a href="https://itsbrianjohnson.com">Brian Johnson</a> | View the source code on <a href="https://github.com/briandotdev/srchallenge">Github</a></p>
         </main>
     </div>
 </body>
