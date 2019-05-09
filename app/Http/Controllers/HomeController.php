@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Log;
 use Illuminate\Http\Request;
 
@@ -80,14 +81,14 @@ class HomeController extends Controller
             if (array_key_exists($log->user_id, $topWeightLost)) {
                 if (!is_null($log->weight)) {
                     $topWeightLost[$log->user_id]['data'][] = [
-                        'date' => $log->date,
+                        'date' => Carbon::parse($log->date)->timestamp,
                         'weight' => $log->weight,
                     ];
                 }
             }
         }
 
-        foreach ($topWeightLost as $topWeightLoss) {
+        foreach ($topWeightLost as &$topWeightLoss) {
             usort($topWeightLoss['data'], function ($item1, $item2) {
                 return $item2['date'] <=> $item1['date'];
             });
