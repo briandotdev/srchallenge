@@ -69,7 +69,7 @@
                                     @endphp
 
                                     @foreach ($topWeightLost as $topWeightLoss)
-                                        <li class="list-group-item">{{ $count++.'. ' . $topWeightLoss['name'] }}<span class="float-right">{{ $topWeightLoss['loss'] }} lbs</span></li>
+                                        <li class="list-group-item">{{ $count++.'. ' . $topWeightLoss['name'] }}<span class="float-right">{{ round($topWeightLoss['loss'], 2) }} lbs</span></li>
                                     @endforeach
                                 </ul>
                             </div>
