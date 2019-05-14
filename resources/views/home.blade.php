@@ -14,6 +14,10 @@
                         </div>
                     @endif
 
+                    <div class="alert alert-primary" role="alert">
+                        Check out the <a href="https://www.strava.com/clubs/514355">United Tech Ops team on Strava</a> for even more fitness based challenges!  And don't forget to join us for the <a href="https://www.strava.com/clubs/514355/group_events/506012">JP Morgan Corporate Challenge</a>.
+                    </div>
+
                     Welcome to United Tech Ops Summer (Health) Readiness!
 
                     <div class="row">
