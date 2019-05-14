@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Log;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -25,8 +24,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $end = now('America/Chicago');
-        $start = $end->copy()->subDays(7);
+        $end = now('America/Chicago')->subDays(1);
+        $start = $end->copy()->subDays(8);
 
         $logs = Log::whereBetween('date', [$start, $end])->get();
 
@@ -101,7 +100,7 @@ class HomeController extends Controller
         usort($topWeightLost, function ($item1, $item2) {
             return $item2['loss'] <=> $item1['loss'];
         });
-        
+
         return view('home')->with('topSteps', $topSteps)->with('topWorkouts', $topWorkouts)->with('topWeightLost', $topWeightLost);
     }
 }
