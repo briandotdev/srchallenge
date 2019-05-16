@@ -29,81 +29,157 @@ class HomeController extends Controller
 
         $logs = Log::whereBetween('date', [$start, $end])->get();
 
-        $topSteps = [];
+        if (auth()->user()->id == 2) {
+            $topSteps = [];
 
-        foreach ($logs as $log) {
-            if (!array_key_exists($log->user_id, $topSteps)) {
-                $topSteps[$log->user_id] = [
-                    'name' => $log->user->name,
-                    'steps' => 0,
-                ];
-            }
-
-            if ($log->user_id == 2) {
-                $topSteps[$log->user_id]['steps'] = rand(1, 100000);
-            } elseif (array_key_exists($log->user_id, $topSteps)) {
-                $topSteps[$log->user_id]['steps'] = $topSteps[$log->user_id]['steps'] + $log->steps;
-            }
-        }
-
-        usort($topSteps, function ($item1, $item2) {
-            return $item2['steps'] <=> $item1['steps'];
-        });
-
-        $topWorkouts = [];
-
-        foreach ($logs as $log) {
-            if (!array_key_exists($log->user_id, $topWorkouts)) {
-                $topWorkouts[$log->user_id] = [
-                    'name' => $log->user->name,
-                    'minutes' => 0,
-                ];
-            }
-
-            if ($log->user_id == 2) {
-                $topWorkouts[$log->user_id]['minutes'] = rand(1, 400);
-            } elseif (array_key_exists($log->user_id, $topWorkouts)) {
-                $topWorkouts[$log->user_id]['minutes'] = $topWorkouts[$log->user_id]['minutes'] + $log->workout;
-            }
-        }
-
-        usort($topWorkouts, function ($item1, $item2) {
-            return $item2['minutes'] <=> $item1['minutes'];
-        });
-
-        $topWeightLost = [];
-
-        foreach ($logs as $log) {
-            if (!array_key_exists($log->user_id, $topWeightLost)) {
-                $topWeightLost[$log->user_id] = [
-                    'name' => $log->user->name,
-                    'data' => [],
-                ];
-            }
-
-            if (array_key_exists($log->user_id, $topWeightLost)) {
-                if (!is_null($log->weight)) {
-                    $topWeightLost[$log->user_id]['data'][] = [
-                        'date' => Carbon::parse($log->date)->timestamp,
-                        'weight' => $log->weight,
+            foreach ($logs as $log) {
+                if (!array_key_exists($log->user_id, $topSteps)) {
+                    $topSteps[$log->user_id] = [
+                        'name' => $log->user->name,
+                        'steps' => 0,
                     ];
                 }
+    
+                if ($log->user_id == 2) {
+                    $topSteps[$log->user_id]['steps'] = rand(1, 100000);
+                } elseif (array_key_exists($log->user_id, $topSteps)) {
+                    $topSteps[$log->user_id]['steps'] = $topSteps[$log->user_id]['steps'] + $log->steps;
+                }
             }
-        }
+    
+            usort($topSteps, function ($item1, $item2) {
+                return $item2['steps'] <=> $item1['steps'];
+            });
+    
+            $topWorkouts = [];
+    
+            foreach ($logs as $log) {
+                if (!array_key_exists($log->user_id, $topWorkouts)) {
+                    $topWorkouts[$log->user_id] = [
+                        'name' => $log->user->name,
+                        'minutes' => 0,
+                    ];
+                }
+    
+                if ($log->user_id == 2) {
+                    $topWorkouts[$log->user_id]['minutes'] = rand(1, 400);
+                } elseif (array_key_exists($log->user_id, $topWorkouts)) {
+                    $topWorkouts[$log->user_id]['minutes'] = $topWorkouts[$log->user_id]['minutes'] + $log->workout;
+                }
+            }
+    
+            usort($topWorkouts, function ($item1, $item2) {
+                return $item2['minutes'] <=> $item1['minutes'];
+            });
+    
+            $topWeightLost = [];
+    
+            foreach ($logs as $log) {
+                if (!array_key_exists($log->user_id, $topWeightLost)) {
+                    $topWeightLost[$log->user_id] = [
+                        'name' => $log->user->name,
+                        'data' => [],
+                    ];
+                }
+    
+                if (array_key_exists($log->user_id, $topWeightLost)) {
+                    if (!is_null($log->weight)) {
+                        $topWeightLost[$log->user_id]['data'][] = [
+                            'date' => Carbon::parse($log->date)->timestamp,
+                            'weight' => $log->weight,
+                        ];
+                    }
+                }
+            }
+    
+            foreach ($topWeightLost as &$topWeightLoss) {
+                usort($topWeightLoss['data'], function ($item1, $item2) {
+                    return $item2['date'] <=> $item1['date'];
+                });
+            }
+    
+            foreach ($topWeightLost as &$topWeightLoss) {
+                $topWeightLoss['loss'] = end($topWeightLoss['data'])['weight'] - reset($topWeightLoss['data'])['weight'];
+            }
+    
+            usort($topWeightLost, function ($item1, $item2) {
+                return $item2['loss'] <=> $item1['loss'];
+            });
+        } else {
+            $topSteps = [];
 
-        foreach ($topWeightLost as &$topWeightLoss) {
-            usort($topWeightLoss['data'], function ($item1, $item2) {
-                return $item2['date'] <=> $item1['date'];
+            foreach ($logs as $log) {
+                if (!array_key_exists($log->user_id, $topSteps)) {
+                    $topSteps[$log->user_id] = [
+                        'name' => $log->user->name,
+                        'steps' => 0,
+                    ];
+                }
+    
+                if (array_key_exists($log->user_id, $topSteps)) {
+                    $topSteps[$log->user_id]['steps'] = $topSteps[$log->user_id]['steps'] + $log->steps;
+                }
+            }
+    
+            usort($topSteps, function ($item1, $item2) {
+                return $item2['steps'] <=> $item1['steps'];
+            });
+    
+            $topWorkouts = [];
+    
+            foreach ($logs as $log) {
+                if (!array_key_exists($log->user_id, $topWorkouts)) {
+                    $topWorkouts[$log->user_id] = [
+                        'name' => $log->user->name,
+                        'minutes' => 0,
+                    ];
+                }
+    
+                if (array_key_exists($log->user_id, $topWorkouts)) {
+                    $topWorkouts[$log->user_id]['minutes'] = $topWorkouts[$log->user_id]['minutes'] + $log->workout;
+                }
+            }
+    
+            usort($topWorkouts, function ($item1, $item2) {
+                return $item2['minutes'] <=> $item1['minutes'];
+            });
+    
+            $topWeightLost = [];
+    
+            foreach ($logs as $log) {
+                if (!array_key_exists($log->user_id, $topWeightLost)) {
+                    $topWeightLost[$log->user_id] = [
+                        'name' => $log->user->name,
+                        'data' => [],
+                    ];
+                }
+    
+                if (array_key_exists($log->user_id, $topWeightLost)) {
+                    if (!is_null($log->weight)) {
+                        $topWeightLost[$log->user_id]['data'][] = [
+                            'date' => Carbon::parse($log->date)->timestamp,
+                            'weight' => $log->weight,
+                        ];
+                    }
+                }
+            }
+    
+            foreach ($topWeightLost as &$topWeightLoss) {
+                usort($topWeightLoss['data'], function ($item1, $item2) {
+                    return $item2['date'] <=> $item1['date'];
+                });
+            }
+    
+            foreach ($topWeightLost as &$topWeightLoss) {
+                $topWeightLoss['loss'] = end($topWeightLoss['data'])['weight'] - reset($topWeightLoss['data'])['weight'];
+            }
+    
+            usort($topWeightLost, function ($item1, $item2) {
+                return $item2['loss'] <=> $item1['loss'];
             });
         }
 
-        foreach ($topWeightLost as &$topWeightLoss) {
-            $topWeightLoss['loss'] = end($topWeightLoss['data'])['weight'] - reset($topWeightLoss['data'])['weight'];
-        }
-
-        usort($topWeightLost, function ($item1, $item2) {
-            return $item2['loss'] <=> $item1['loss'];
-        });
+        
 
         return view('home')->with('topSteps', $topSteps)->with('topWorkouts', $topWorkouts)->with('topWeightLost', $topWeightLost);
     }
